@@ -1,0 +1,32 @@
+注意：所有操作均在Hadoop部署目录下进行。
+
+启动Hadoop集群：
+Step1 :
+在各个JournalNode节点上，输入以下命令启动journalnode服务：
+sbin/hadoop-daemon.sh start journalnode
+
+Step2:
+在[nn1]上，对其进行格式化，并启动：
+bin/hdfs namenode -format
+sbin/hadoop-daemon.sh start namenode
+
+Step3:
+在[nn2]上，同步nn1的元数据信息：
+bin/hdfs namenode -bootstrapStandby
+
+Step4:
+启动[nn2]：
+sbin/hadoop-daemon.sh start namenode
+
+经过以上四步操作，nn1和nn2均处理standby状态
+Step5:
+将[nn1]切换为Active
+bin/hdfs haadmin -transitionToActive nn1
+
+Step6:
+在[nn1]上，启动所有datanode
+sbin/hadoop-daemons.sh start datanode
+
+关闭Hadoop集群：
+在[nn1]上，输入以下命令
+sbin/stop-dfs.sh
